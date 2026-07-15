@@ -24,3 +24,10 @@
 # OS
 .DS_Store
 Thumbs.db
+
+# Android keystore
+**/*.keystore
+**/*.jks
+
+# Bundler
+**/.bundle/
