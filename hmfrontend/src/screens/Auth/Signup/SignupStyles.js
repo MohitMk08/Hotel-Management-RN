@@ -80,12 +80,14 @@ const styles = StyleSheet.create({
 
   input: {
     backgroundColor: '#FFFFFF',
-    // borderColor: 'rgba(235, 252, 0, 0.99)',
+    color: '#000',
+    marginBottom: 10,
   },
 
   termsRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 10,
   },
 
   termsText: {
@@ -138,19 +140,14 @@ const styles = StyleSheet.create({
   },
 
   googleButton: {
-    height: 54,
-
-    borderRadius: 15,
-
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-
-    backgroundColor: '#FFFFFF',
-
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderColor: '#DADCE0',
+    borderWidth: 1,
+    borderRadius: 15,
+    height: 55,
     elevation: 3,
 
     shadowColor: '#000',
@@ -159,14 +156,20 @@ const styles = StyleSheet.create({
       height: 2,
     },
     shadowOpacity: 0.08,
-    shadowRadius: 6,
+    shadowRadius: 8,
   },
 
   googleText: {
-    marginLeft: 10,
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
+    color: '#3C4043',
+    fontSize: 15,
+    fontWeight: '500',
+    marginLeft: 14,
+    letterSpacing: 0.25,
+  },
+
+  googleIcon: {
+    width: 40,
+    height: 40,
   },
 
   footerRow: {

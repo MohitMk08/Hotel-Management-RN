@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, Image, TouchableOpacity, StatusBar } from 'react-native';
-
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import AuthAPI from '../../../api/authApi';
 
 import {
-  Icon,
   TextInput,
   Checkbox,
   HelperText,
   ActivityIndicator,
 } from 'react-native-paper';
 
-import { Alert } from 'react-native';
-import AuthAPI from '../../../api/authApi';
-import { saveUserSession } from '../../../services/storageService';
+import StorageService from '../../../services/storageService';
+import GoogleAuthService from '../../../services/googleAuthService';
 
+import { Alert } from 'react-native';
 import styles from './LoginStyles';
 import LinearGradient from 'react-native-linear-gradient';
 import { textInputTheme } from '../../../constants/paperTheme';
@@ -33,7 +31,8 @@ const LoginScreen = () => {
 
   const [secureText, setSecureText] = useState(true);
 
-  const [loading, setLoading] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const navigation = useNavigation();
 
@@ -64,14 +63,14 @@ const LoginScreen = () => {
     return valid;
   };
 
-  //login function
+  // Login Function
   const handleLogin = async () => {
     if (!validate()) {
       return;
     }
 
     try {
-      setLoading(true);
+      setLoginLoading(true);
 
       const payload = {
         email,
@@ -80,28 +79,43 @@ const LoginScreen = () => {
 
       const response = await AuthAPI.login(payload);
 
-      console.log('Login Response:', response);
+      if (response.success) {
+        await StorageService.saveUserSession(
+          response.data.token,
+          response.data.user,
+        );
 
-      // Save Session
-      await saveUserSession(response.data.token, response.data.user);
-
-      setLoading(false);
-
-      Alert.alert('Success', 'Login successful!', [
-        {
-          text: 'OK',
-          onPress: () => {
-            navigation.replace('Dashboard');
+        setLoginLoading(false);
+        Alert.alert('Success', 'Login successful!', [
+          {
+            text: 'OK',
+            onPress: () => navigation.replace('Dashboard'),
           },
-        },
-      ]);
+        ]);
+        setEmail('');
+        setPassword('');
+      } else {
+        setLoginLoading(false);
+
+        Alert.alert('Login Failed', response.message);
+      }
     } catch (error) {
-      setLoading(false);
+      setLoginLoading(false);
 
       Alert.alert(
         'Login Failed',
         error.response?.data?.message || 'Unable to login.',
       );
+    }
+  };
+
+  // google signin function
+  const handleGoogleSignIn = async () => {
+    try {
+      setGoogleLoading(true);
+      await GoogleAuthService.signIn(navigation);
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -209,9 +223,11 @@ const LoginScreen = () => {
             theme={textInputTheme}
           />
 
-          <HelperText type="error" visible={!!emailError}>
-            {emailError}
-          </HelperText>
+          {emailError && (
+            <HelperText type="error" visible={!!emailError}>
+              {emailError}
+            </HelperText>
+          )}
 
           <TextInput
             label="Password"
@@ -232,9 +248,11 @@ const LoginScreen = () => {
             theme={textInputTheme}
           />
 
-          <HelperText type="error" visible={!!passwordError}>
-            {passwordError}
-          </HelperText>
+          {passwordError && (
+            <HelperText type="error" visible={!!passwordError}>
+              {passwordError}
+            </HelperText>
+          )}
 
           <View style={styles.bottomRow}>
             <View style={styles.rememberRow}>
@@ -255,28 +273,16 @@ const LoginScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {/* <TouchableOpacity
-            style={styles.loginButton}
-            onPress={handleLogin}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text style={styles.loginButtonText}>LOGIN</Text>
-            )}
-          </TouchableOpacity> */}
-
           <TouchableOpacity
             activeOpacity={0.5}
             onPress={handleLogin}
-            disabled={loading}
+            disabled={loginLoading || googleLoading}
           >
             <LinearGradient
               colors={['#3d76f0', '#1D4ED8']}
               style={styles.loginButton}
             >
-              {loading ? (
+              {loginLoading ? (
                 <ActivityIndicator color="#FFF" />
               ) : (
                 <Text style={styles.loginButtonText}>LOGIN</Text>
@@ -292,10 +298,23 @@ const LoginScreen = () => {
             <View style={styles.divider} />
           </View>
 
-          <TouchableOpacity style={styles.googleButton}>
-            <Icon source="google" size={22} color="#DB4437" />
+          <TouchableOpacity
+            style={styles.googleButton}
+            onPress={handleGoogleSignIn}
+            disabled={loginLoading || googleLoading}
+          >
+            {googleLoading ? (
+              <ActivityIndicator color="#4285F4" />
+            ) : (
+              <>
+                <Image
+                  source={require('../../../assets/icons/google.png')}
+                  style={styles.googleIcon}
+                />
 
-            <Text style={styles.googleText}>Sign in with Google</Text>
+                <Text style={styles.googleText}>Sign in with Google</Text>
+              </>
+            )}
           </TouchableOpacity>
 
           <View style={styles.footerRow}>

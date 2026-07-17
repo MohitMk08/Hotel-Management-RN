@@ -19,6 +19,7 @@ import AuthAPI from '../../../api/authApi';
 
 import styles from './SignupStyles';
 import { textInputTheme } from '../../../constants/paperTheme';
+import GoogleAuthService from '../../../services/googleAuthService';
 
 const SignupScreen = () => {
   const navigation = useNavigation();
@@ -34,7 +35,8 @@ const SignupScreen = () => {
 
   const [acceptTerms, setAcceptTerms] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+  const [signupLoading, setSignupLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const [errors, setErrors] = useState({
     fullName: '',
@@ -100,7 +102,7 @@ const SignupScreen = () => {
     }
 
     try {
-      setLoading(true);
+      signupLoading(true);
 
       const payload = {
         full_name: fullName,
@@ -112,7 +114,7 @@ const SignupScreen = () => {
 
       const response = await AuthAPI.register(payload);
 
-      setLoading(false);
+      signupLoading(false);
 
       setFullName('');
       setEmail('');
@@ -134,12 +136,22 @@ const SignupScreen = () => {
         ],
       );
     } catch (error) {
-      setLoading(false);
+      signupLoading(false);
 
       Alert.alert(
         'Registration Failed',
         error.response?.data?.message || 'Something went wrong.',
       );
+    }
+  };
+
+  // google signin function
+  const handleGoogleSignIn = async () => {
+    try {
+      setGoogleLoading(true);
+      await GoogleAuthService.signIn(navigation);
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -194,9 +206,11 @@ const SignupScreen = () => {
             theme={textInputTheme}
           />
 
-          <HelperText type="error" visible={!!errors.fullName}>
-            {errors.fullName}
-          </HelperText>
+          {errors.fullName && (
+            <HelperText type="error" visible={!!errors.fullName}>
+              {errors.fullName}
+            </HelperText>
+          )}
 
           <TextInput
             label="Email Address"
@@ -212,9 +226,11 @@ const SignupScreen = () => {
             theme={textInputTheme}
           />
 
-          <HelperText type="error" visible={!!errors.email}>
-            {errors.email}
-          </HelperText>
+          {errors.email && (
+            <HelperText type="error" visible={!!errors.email}>
+              {errors.email}
+            </HelperText>
+          )}
 
           <TextInput
             label="Mobile Number"
@@ -230,9 +246,11 @@ const SignupScreen = () => {
             theme={textInputTheme}
           />
 
-          <HelperText type="error" visible={!!errors.mobile}>
-            {errors.mobile}
-          </HelperText>
+          {errors.mobile && (
+            <HelperText type="error" visible={!!errors.mobile}>
+              {errors.mobile}
+            </HelperText>
+          )}
 
           <TextInput
             label="Password"
@@ -250,11 +268,14 @@ const SignupScreen = () => {
             style={styles.input}
             outlineStyle={styles.outlineStyle}
             theme={textInputTheme}
+            textColor="#000"
           />
 
-          <HelperText type="error" visible={!!errors.password}>
-            {errors.password}
-          </HelperText>
+          {errors.password && (
+            <HelperText type="error" visible={!!errors.password}>
+              {errors.password}
+            </HelperText>
+          )}
 
           <TextInput
             label="Confirm Password"
@@ -275,9 +296,11 @@ const SignupScreen = () => {
             textColor="#000"
           />
 
-          <HelperText type="error" visible={!!errors.confirmPassword}>
-            {errors.confirmPassword}
-          </HelperText>
+          {errors.confirmPassword && (
+            <HelperText type="error" visible={!!errors.confirmPassword}>
+              {errors.confirmPassword}
+            </HelperText>
+          )}
 
           <View style={styles.termsRow}>
             <Checkbox
@@ -288,9 +311,11 @@ const SignupScreen = () => {
             <Text style={styles.termsText}>I agree to Terms & Conditions</Text>
           </View>
 
-          <HelperText type="error" visible={!!errors.terms}>
-            {errors.terms}
-          </HelperText>
+          {errors.terms && (
+            <HelperText type="error" visible={!!errors.terms}>
+              {errors.terms}
+            </HelperText>
+          )}
 
           <TouchableOpacity
             activeOpacity={0.9}
@@ -317,10 +342,17 @@ const SignupScreen = () => {
             <View style={styles.divider} />
           </View>
 
-          <TouchableOpacity style={styles.googleButton}>
-            <Icon source="google" size={22} color="#DB4437" />
+          <TouchableOpacity
+            style={styles.googleButton}
+            onPress={handleGoogleSignIn}
+            disabled={signupLoading || googleLoading}
+          >
+            <Image
+              source={require('../../../assets/icons/google.png')}
+              style={styles.googleIcon}
+            />
 
-            <Text style={styles.googleText}>Continue with Google</Text>
+            <Text style={styles.googleText}>Sign in with Google</Text>
           </TouchableOpacity>
 
           <View style={styles.footerRow}>

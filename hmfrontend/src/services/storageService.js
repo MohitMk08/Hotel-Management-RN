@@ -1,22 +1,44 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const TOKEN_KEY = 'hm_token';
-const USER_KEY = 'hm_user';
-
-export const saveUserSession = async (token, user) => {
-  await AsyncStorage.setItem(TOKEN_KEY, token);
-  await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
+const STORAGE_KEYS = {
+  TOKEN: 'hm_token',
+  USER: 'hm_user',
 };
 
-export const getToken = async () => {
-  return await AsyncStorage.getItem(TOKEN_KEY);
+// ==========================
+// Save Session
+// ==========================
+const saveUserSession = async (token, user) => {
+  await AsyncStorage.setItem(STORAGE_KEYS.TOKEN, token);
+  await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
 };
 
-export const getUser = async () => {
-  const user = await AsyncStorage.getItem(USER_KEY);
+// ==========================
+// Get Token
+// ==========================
+const getToken = async () => {
+  return await AsyncStorage.getItem(STORAGE_KEYS.TOKEN);
+};
+
+// ==========================
+// Get User
+// ==========================
+const getUser = async () => {
+  const user = await AsyncStorage.getItem(STORAGE_KEYS.USER);
   return user ? JSON.parse(user) : null;
 };
 
-export const clearSession = async () => {
-  await AsyncStorage.multiRemove([TOKEN_KEY, USER_KEY]);
+// ==========================
+// Clear Session
+// ==========================
+const clearSession = async () => {
+  await AsyncStorage.removeItem(STORAGE_KEYS.TOKEN);
+  await AsyncStorage.removeItem(STORAGE_KEYS.USER);
+};
+
+export default {
+  saveUserSession,
+  getToken,
+  getUser,
+  clearSession,
 };

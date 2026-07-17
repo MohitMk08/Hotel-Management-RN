@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: COLORS.placeholder,
     textAlign: 'center',
+    marginBottom: 10,
   },
 
   loginContainer: {
@@ -68,17 +69,14 @@ const styles = StyleSheet.create({
   },
 
   googleButton: {
-    height: 54,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-
+    backgroundColor: '#FFFFFF',
+    borderColor: '#DADCE0',
+    borderWidth: 1,
+    borderRadius: 15,
+    height: 55,
     elevation: 3,
 
     shadowColor: '#000',
@@ -91,10 +89,16 @@ const styles = StyleSheet.create({
   },
 
   googleText: {
-    marginLeft: 10,
-    fontSize: 18,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
+    color: '#3C4043',
+    fontSize: 15,
+    fontWeight: '500',
+    marginLeft: 14,
+    letterSpacing: 0.25,
+  },
+
+  googleIcon: {
+    width: 40,
+    height: 40,
   },
 
   dividerContainer: {
@@ -117,6 +121,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: '#FFFFFF',
     color: '#000',
+    marginBottom: 10,
   },
 
   outlineStyle: {

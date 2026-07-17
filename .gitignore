@@ -31,3 +31,6 @@ Thumbs.db
 
 # Bundler
 **/.bundle/
+
+# Firebase Admin
+hmbackend/firebase/serviceAccountKey.json
