@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, Image, TouchableOpacity, StatusBar } from 'react-native';
-
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import AuthAPI from '../../../api/authApi';
 
 import {
-  Icon,
   TextInput,
   Checkbox,
   HelperText,
   ActivityIndicator,
 } from 'react-native-paper';
 
-import { Alert } from 'react-native';
-import AuthAPI from '../../../api/authApi';
-import { saveUserSession } from '../../../services/storageService';
+import StorageService from '../../../services/storageService';
+import GoogleAuthService from '../../../services/googleAuthService';
 
+import { Alert } from 'react-native';
 import styles from './LoginStyles';
 import LinearGradient from 'react-native-linear-gradient';
 import { textInputTheme } from '../../../constants/paperTheme';
@@ -64,7 +62,7 @@ const LoginScreen = () => {
     return valid;
   };
 
-  //login function
+  // Login Function
   const handleLogin = async () => {
     if (!validate()) {
       return;
@@ -80,21 +78,27 @@ const LoginScreen = () => {
 
       const response = await AuthAPI.login(payload);
 
-      console.log('Login Response:', response);
+      if (response.success) {
+        await StorageService.saveUserSession(
+          response.data.token,
+          response.data.user,
+        );
 
-      // Save Session
-      await saveUserSession(response.data.token, response.data.user);
+        setLoading(false);
 
-      setLoading(false);
-
-      Alert.alert('Success', 'Login successful!', [
-        {
-          text: 'OK',
-          onPress: () => {
-            navigation.replace('Dashboard');
+        Alert.alert('Success', 'Login successful!', [
+          {
+            text: 'OK',
+            onPress: () => navigation.replace('Dashboard'),
           },
-        },
-      ]);
+        ]);
+        setEmail('');
+        setPassword('');
+      } else {
+        setLoading(false);
+
+        Alert.alert('Login Failed', response.message);
+      }
     } catch (error) {
       setLoading(false);
 
@@ -102,6 +106,17 @@ const LoginScreen = () => {
         'Login Failed',
         error.response?.data?.message || 'Unable to login.',
       );
+    }
+  };
+
+  // google signin function
+  const handleGoogleSignIn = async () => {
+    try {
+      setLoading(true);
+
+      await GoogleAuthService.signIn(navigation);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -209,9 +224,11 @@ const LoginScreen = () => {
             theme={textInputTheme}
           />
 
-          <HelperText type="error" visible={!!emailError}>
-            {emailError}
-          </HelperText>
+          {emailError && (
+            <HelperText type="error" visible={!!emailError}>
+              {emailError}
+            </HelperText>
+          )}
 
           <TextInput
             label="Password"
@@ -232,9 +249,11 @@ const LoginScreen = () => {
             theme={textInputTheme}
           />
 
-          <HelperText type="error" visible={!!passwordError}>
-            {passwordError}
-          </HelperText>
+          {passwordError && (
+            <HelperText type="error" visible={!!passwordError}>
+              {passwordError}
+            </HelperText>
+          )}
 
           <View style={styles.bottomRow}>
             <View style={styles.rememberRow}>
@@ -254,18 +273,6 @@ const LoginScreen = () => {
               <Text style={styles.forgotText}>Forgot Password?</Text>
             </TouchableOpacity>
           </View>
-
-          {/* <TouchableOpacity
-            style={styles.loginButton}
-            onPress={handleLogin}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text style={styles.loginButtonText}>LOGIN</Text>
-            )}
-          </TouchableOpacity> */}
 
           <TouchableOpacity
             activeOpacity={0.5}
@@ -292,8 +299,14 @@ const LoginScreen = () => {
             <View style={styles.divider} />
           </View>
 
-          <TouchableOpacity style={styles.googleButton}>
-            <Icon source="google" size={22} color="#DB4437" />
+          <TouchableOpacity
+            style={styles.googleButton}
+            onPress={handleGoogleSignIn}
+          >
+            <Image
+              source={require('../../../assets/icons/google.png')}
+              style={styles.googleIcon}
+            />
 
             <Text style={styles.googleText}>Sign in with Google</Text>
           </TouchableOpacity>

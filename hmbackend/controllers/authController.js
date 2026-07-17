@@ -1,12 +1,152 @@
 const bcrypt = require("bcrypt");
+require("../config/firebaseAdmin");
+const { getAuth } = require("firebase-admin/auth");
 const db = require("../config/database");
 const generateToken = require("../utils/generateToken");
 const {
   validateRegister,
   validateLogin,
 } = require("../validators/authValidator");
-
 const { successResponse, errorResponse } = require("../utils/responseHandler");
+
+const googleAuth = async (req, res) => {
+  try {
+    const { firebaseToken } = req.body;
+
+    if (!firebaseToken) {
+      return errorResponse(res, "Firebase token is required", 400);
+    }
+
+    // =====================================
+    // Verify Firebase ID Token
+    // =====================================
+
+    const decodedToken = await getAuth().verifyIdToken(firebaseToken);
+
+    const { uid, email, name: full_name, picture } = decodedToken;
+
+    // =====================================
+    // Check Existing User
+    // =====================================
+
+    const [existingUsers] = await db.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email],
+    );
+
+    let user;
+
+    if (existingUsers.length > 0) {
+      user = existingUsers[0];
+
+      // =====================================
+      // Decide Auth Provider
+      // =====================================
+
+      let authProvider = "google";
+
+      if (user.auth_provider === "email") {
+        authProvider = "both";
+      } else if (user.auth_provider === "both") {
+        authProvider = "both";
+      }
+
+      // =====================================
+      // Update Existing User
+      // =====================================
+
+      await db.query(
+        `UPDATE users
+         SET firebase_uid = ?,
+             auth_provider = ?,
+             profile_image = ?,
+             last_login = NOW(),
+             updated_at = NOW()
+         WHERE id = ?`,
+        [uid, authProvider, picture || user.profile_image, user.id],
+      );
+
+      const [updatedUser] = await db.query("SELECT * FROM users WHERE id = ?", [
+        user.id,
+      ]);
+
+      user = updatedUser[0];
+    } else {
+      // =====================================
+      // Get Default Receptionist Role
+      // =====================================
+
+      const [roles] = await db.query(
+        "SELECT id FROM roles WHERE role_name = ?",
+        ["Receptionist"],
+      );
+
+      if (roles.length === 0) {
+        return errorResponse(res, "Default role not found", 500);
+      }
+
+      const roleId = roles[0].id;
+
+      // =====================================
+      // Insert New Google User
+      // =====================================
+
+      const [result] = await db.query(
+        `INSERT INTO users
+        (
+          full_name,
+          email,
+          password,
+          firebase_uid,
+          auth_provider,
+          profile_image,
+          role_id,
+          last_login
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
+        [full_name, email, null, uid, "google", picture || null, roleId],
+      );
+
+      const [newUser] = await db.query("SELECT * FROM users WHERE id = ?", [
+        result.insertId,
+      ]);
+
+      user = newUser[0];
+    }
+
+    // =====================================
+    // Generate App JWT
+    // =====================================
+
+    const token = generateToken(user);
+
+    // =====================================
+    // Success Response
+    // =====================================
+
+    return successResponse(res, "Google authentication successful", {
+      token,
+      user: {
+        id: user.id,
+        firebase_uid: user.firebase_uid,
+        full_name: user.full_name,
+        email: user.email,
+        mobile: user.mobile,
+        role_id: user.role_id,
+        auth_provider: user.auth_provider,
+        profile_image: user.profile_image,
+        is_active: user.is_active,
+        last_login: user.last_login,
+        created_at: user.created_at,
+        updated_at: user.updated_at,
+      },
+    });
+  } catch (error) {
+    console.error("Google auth error:", error);
+
+    return errorResponse(res, "Google authentication failed", 401);
+  }
+};
 
 //register function
 const register = async (req, res) => {
@@ -81,6 +221,12 @@ const register = async (req, res) => {
       ],
     );
 
+    const [newUser] = await db.query("SELECT * FROM users WHERE id = ?", [
+      result.insertId,
+    ]);
+
+    user = newUser[0];
+
     // ==========================
     // Success Response
     // ==========================
@@ -99,7 +245,6 @@ const register = async (req, res) => {
     return errorResponse(res, "Internal Server Error", 500);
   }
 };
-
 //login function
 const login = async (req, res) => {
   try {
@@ -204,4 +349,5 @@ const login = async (req, res) => {
 module.exports = {
   register,
   login,
+  googleAuth,
 };
