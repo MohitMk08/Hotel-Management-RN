@@ -35,7 +35,8 @@ const SignupScreen = () => {
 
   const [acceptTerms, setAcceptTerms] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+  const [signupLoading, setSignupLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const [errors, setErrors] = useState({
     fullName: '',
@@ -101,7 +102,7 @@ const SignupScreen = () => {
     }
 
     try {
-      setLoading(true);
+      signupLoading(true);
 
       const payload = {
         full_name: fullName,
@@ -113,7 +114,7 @@ const SignupScreen = () => {
 
       const response = await AuthAPI.register(payload);
 
-      setLoading(false);
+      signupLoading(false);
 
       setFullName('');
       setEmail('');
@@ -135,7 +136,7 @@ const SignupScreen = () => {
         ],
       );
     } catch (error) {
-      setLoading(false);
+      signupLoading(false);
 
       Alert.alert(
         'Registration Failed',
@@ -145,8 +146,13 @@ const SignupScreen = () => {
   };
 
   // google signin function
-  const handleGoogleSignIn = () => {
-    GoogleAuthService.signIn(navigation);
+  const handleGoogleSignIn = async () => {
+    try {
+      setGoogleLoading(true);
+      await GoogleAuthService.signIn(navigation);
+    } finally {
+      setGoogleLoading(false);
+    }
   };
 
   return (
@@ -339,6 +345,7 @@ const SignupScreen = () => {
           <TouchableOpacity
             style={styles.googleButton}
             onPress={handleGoogleSignIn}
+            disabled={signupLoading || googleLoading}
           >
             <Image
               source={require('../../../assets/icons/google.png')}

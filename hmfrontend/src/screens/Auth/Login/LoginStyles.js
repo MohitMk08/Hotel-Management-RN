@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: COLORS.placeholder,
     textAlign: 'center',
+    marginBottom: 10,
   },
 
   loginContainer: {

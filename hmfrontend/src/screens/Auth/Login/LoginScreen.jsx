@@ -31,7 +31,8 @@ const LoginScreen = () => {
 
   const [secureText, setSecureText] = useState(true);
 
-  const [loading, setLoading] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const navigation = useNavigation();
 
@@ -69,7 +70,7 @@ const LoginScreen = () => {
     }
 
     try {
-      setLoading(true);
+      setLoginLoading(true);
 
       const payload = {
         email,
@@ -84,8 +85,7 @@ const LoginScreen = () => {
           response.data.user,
         );
 
-        setLoading(false);
-
+        setLoginLoading(false);
         Alert.alert('Success', 'Login successful!', [
           {
             text: 'OK',
@@ -95,12 +95,12 @@ const LoginScreen = () => {
         setEmail('');
         setPassword('');
       } else {
-        setLoading(false);
+        setLoginLoading(false);
 
         Alert.alert('Login Failed', response.message);
       }
     } catch (error) {
-      setLoading(false);
+      setLoginLoading(false);
 
       Alert.alert(
         'Login Failed',
@@ -112,11 +112,10 @@ const LoginScreen = () => {
   // google signin function
   const handleGoogleSignIn = async () => {
     try {
-      setLoading(true);
-
+      setGoogleLoading(true);
       await GoogleAuthService.signIn(navigation);
     } finally {
-      setLoading(false);
+      setGoogleLoading(false);
     }
   };
 
@@ -277,13 +276,13 @@ const LoginScreen = () => {
           <TouchableOpacity
             activeOpacity={0.5}
             onPress={handleLogin}
-            disabled={loading}
+            disabled={loginLoading || googleLoading}
           >
             <LinearGradient
               colors={['#3d76f0', '#1D4ED8']}
               style={styles.loginButton}
             >
-              {loading ? (
+              {loginLoading ? (
                 <ActivityIndicator color="#FFF" />
               ) : (
                 <Text style={styles.loginButtonText}>LOGIN</Text>
@@ -302,13 +301,20 @@ const LoginScreen = () => {
           <TouchableOpacity
             style={styles.googleButton}
             onPress={handleGoogleSignIn}
+            disabled={loginLoading || googleLoading}
           >
-            <Image
-              source={require('../../../assets/icons/google.png')}
-              style={styles.googleIcon}
-            />
+            {googleLoading ? (
+              <ActivityIndicator color="#4285F4" />
+            ) : (
+              <>
+                <Image
+                  source={require('../../../assets/icons/google.png')}
+                  style={styles.googleIcon}
+                />
 
-            <Text style={styles.googleText}>Sign in with Google</Text>
+                <Text style={styles.googleText}>Sign in with Google</Text>
+              </>
+            )}
           </TouchableOpacity>
 
           <View style={styles.footerRow}>
