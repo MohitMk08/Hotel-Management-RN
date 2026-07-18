@@ -5,10 +5,9 @@ import {
 } from '@react-native-google-signin/google-signin';
 
 import AuthAPI from '../api/authApi';
-import StorageService from './storageService';
 
 const GoogleAuthService = {
-  signIn: async navigation => {
+  signIn: async () => {
     try {
       await GoogleSignin.signOut();
 
@@ -38,15 +37,10 @@ const GoogleAuthService = {
       console.log('Backend Response:', response);
 
       if (response.success) {
-        await StorageService.saveUserSession(
-          response.data.token,
-          response.data.user,
-        );
-
-        navigation.replace('Dashboard');
-      } else {
-        console.log(response.message);
+        return response.data;
       }
+
+      throw new Error(response.message);
     } catch (error) {
       console.log('Google Sign In Error:', error);
 

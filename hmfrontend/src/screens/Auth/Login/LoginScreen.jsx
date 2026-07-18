@@ -12,7 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native-paper';
 
-import StorageService from '../../../services/storageService';
+import { useAuth } from '../../../context/AuthContext';
 import GoogleAuthService from '../../../services/googleAuthService';
 
 import { Alert } from 'react-native';
@@ -35,6 +35,7 @@ const LoginScreen = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
 
   const navigation = useNavigation();
+  const { login } = useAuth();
 
   const validate = () => {
     let valid = true;
@@ -80,10 +81,7 @@ const LoginScreen = () => {
       const response = await AuthAPI.login(payload);
 
       if (response.success) {
-        await StorageService.saveUserSession(
-          response.data.token,
-          response.data.user,
-        );
+        await login(response.data.token, response.data.user);
 
         setLoginLoading(false);
         Alert.alert('Success', 'Login successful!', [
@@ -113,19 +111,25 @@ const LoginScreen = () => {
   const handleGoogleSignIn = async () => {
     try {
       setGoogleLoading(true);
-      await GoogleAuthService.signIn(navigation);
-    } finally {
+
+      const response = await GoogleAuthService.signIn();
+
+      await login(response.token, response.user);
+      console.log('Frontend-user', response.user);
+
       setGoogleLoading(false);
+
+      navigation.replace('Dashboard');
+    } catch (error) {
+      setGoogleLoading(false);
+
+      console.log(error);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        backgroundColor={'transparent'}
-        barStyle={'dark-content'} // Changed to light-content for white text
-        translucent={true}
-      />
+      <StatusBar barStyle="dark-content" translucent={true} animated={true} />
       <KeyboardAwareScrollView
         enableOnAndroid
         keyboardShouldPersistTaps="handled"

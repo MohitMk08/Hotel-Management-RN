@@ -271,6 +271,7 @@ const login = async (req, res) => {
       u.email,
       u.password,
       u.mobile,
+      u.profile_image,
       u.role_id,
       r.role_name,
       u.auth_provider,
@@ -337,6 +338,7 @@ const login = async (req, res) => {
         },
 
         auth_provider: user.auth_provider,
+        profile_image: user.profile_image,
       },
     });
   } catch (error) {

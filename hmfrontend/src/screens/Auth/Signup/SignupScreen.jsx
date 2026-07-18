@@ -320,13 +320,13 @@ const SignupScreen = () => {
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={handleSignup}
-            disabled={loading}
+            disabled={signupLoading}
           >
             <LinearGradient
               colors={['#2563EB', '#1D4ED8']}
               style={styles.signupButton}
             >
-              {loading ? (
+              {signupLoading ? (
                 <ActivityIndicator color="#FFF" />
               ) : (
                 <Text style={styles.signupButtonText}>CREATE ACCOUNT</Text>

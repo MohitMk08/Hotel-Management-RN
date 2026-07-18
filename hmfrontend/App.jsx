@@ -1,23 +1,23 @@
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import AppNavigator from './src/navigation/AppNavigator';
-// import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import './src/config/googleSignin';
+import { paperTheme } from './src/constants/paperTheme';
+import { AuthProvider } from './src/context/AuthContext';
 
-// GoogleSignin.configure({
-//   webClientId:
-//     '592444654139-7b0b1naehvss26lgn56nkmq25mdon50p.apps.googleusercontent.com',
-//   scopes: ['profile', 'email'],
-//   offlineAccess: true,
-//   forceCodeForRefreshToken: true,
-// });
+// do not remove this import
+import './src/config/googleSignin';
 
 const App = () => {
   return (
-    <PaperProvider>
-      <AppNavigator />
-    </PaperProvider>
+    <SafeAreaProvider>
+      <PaperProvider theme={paperTheme}>
+        <AuthProvider>
+          <AppNavigator />
+        </AuthProvider>
+      </PaperProvider>
+    </SafeAreaProvider>
   );
 };
 

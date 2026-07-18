@@ -7,7 +7,7 @@ const COLORS = {
   secondary: '#F59E0B',
 
   // Background
-  background: '#F8FAFC',
+  background: '#EFF4FD',
   white: '#FFFFFF',
 
   // Text

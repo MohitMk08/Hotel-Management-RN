@@ -6,8 +6,6 @@ const { height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
-    paddingTop: 0,
   },
 
   scrollContainer: {
@@ -37,7 +35,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 150,
     height: 150,
-    marginBottom: -15,
+    marginVertical: -15,
   },
 
   title: {
