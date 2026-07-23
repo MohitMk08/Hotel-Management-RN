@@ -3,6 +3,7 @@ require("../config/firebaseAdmin");
 const { getAuth } = require("firebase-admin/auth");
 const db = require("../config/database");
 const generateToken = require("../utils/generateToken");
+const authService = require("../services/authService");
 const {
   validateRegister,
   validateLogin,
@@ -66,50 +67,120 @@ const googleAuth = async (req, res) => {
         [uid, authProvider, picture || user.profile_image, user.id],
       );
 
-      const [updatedUser] = await db.query("SELECT * FROM users WHERE id = ?", [
-        user.id,
-      ]);
+      const [updatedUser] = await db.query(
+        `SELECT
+      u.*,
+      h.hotel_name,
+      h.hotel_logo,
+      h.subscription_plan,
+      h.setup_completed
+   FROM users u
+   LEFT JOIN hotels h
+   ON u.hotel_id = h.id
+   WHERE u.id = ?`,
+        [user.id],
+      );
 
       user = updatedUser[0];
     } else {
       // =====================================
-      // Get Default Receptionist Role
+      // Create Hotel
+      // =====================================
+
+      const [hotelResult] = await db.query(
+        `INSERT INTO hotels
+    (
+      hotel_name,
+      email
+    )
+    VALUES (?, ?)`,
+        ["New Hotel", email],
+      );
+
+      const hotelId = hotelResult.insertId;
+
+      const defaultHotelName = `Hotel-${String(hotelId).padStart(6, "0")}`;
+
+      await db.query(
+        `
+    UPDATE hotels
+    SET hotel_name = ?
+    WHERE id = ?
+  `,
+        [defaultHotelName, hotelId],
+      );
+
+      // =====================================
+      // Create Default Hotel Settings
+      // =====================================
+
+      await db.query(
+        `INSERT INTO hotel_settings
+    (
+      hotel_id
+    )
+    VALUES (?)`,
+        [hotelId],
+      );
+
+      // =====================================
+      // Get Owner Role
       // =====================================
 
       const [roles] = await db.query(
         "SELECT id FROM roles WHERE role_name = ?",
-        ["Receptionist"],
+        ["Owner"],
       );
 
       if (roles.length === 0) {
-        return errorResponse(res, "Default role not found", 500);
+        return errorResponse(res, "Owner role not found", 500);
       }
 
       const roleId = roles[0].id;
 
       // =====================================
-      // Insert New Google User
+      // Insert Owner User
       // =====================================
 
       const [result] = await db.query(
         `INSERT INTO users
-        (
+    (
+      hotel_id,
+      full_name,
+      email,
+      password,
+      firebase_uid,
+      auth_provider,
+      profile_image,
+      role_id,
+      last_login
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+        [
+          hotelId,
           full_name,
           email,
-          password,
-          firebase_uid,
-          auth_provider,
-          profile_image,
-          role_id,
-          last_login
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
-        [full_name, email, null, uid, "google", picture || null, roleId],
+          null,
+          uid,
+          "google",
+          picture || null,
+          roleId,
+        ],
       );
 
-      const [newUser] = await db.query("SELECT * FROM users WHERE id = ?", [
-        result.insertId,
-      ]);
+      const [newUser] = await db.query(
+        `SELECT
+        u.*,
+        h.hotel_name,
+        h.hotel_logo,
+        h.subscription_plan,
+        h.setup_completed
+     FROM users u
+     LEFT JOIN hotels h
+     ON u.hotel_id = h.id
+     WHERE u.id = ?`,
+        [result.insertId],
+      );
 
       user = newUser[0];
     }
@@ -126,19 +197,28 @@ const googleAuth = async (req, res) => {
 
     return successResponse(res, "Google authentication successful", {
       token,
+
       user: {
         id: user.id,
+        hotel_id: user.hotel_id,
         firebase_uid: user.firebase_uid,
         full_name: user.full_name,
         email: user.email,
         mobile: user.mobile,
+
         role_id: user.role_id,
+
         auth_provider: user.auth_provider,
+
         profile_image: user.profile_image,
-        is_active: user.is_active,
-        last_login: user.last_login,
-        created_at: user.created_at,
-        updated_at: user.updated_at,
+      },
+
+      hotel: {
+        id: user.hotel_id,
+        name: user.hotel_name,
+        logo: user.hotel_logo,
+        subscription_plan: user.subscription_plan,
+        setup_completed: user.setup_completed,
       },
     });
   } catch (error) {
@@ -151,8 +231,6 @@ const googleAuth = async (req, res) => {
 //register function
 const register = async (req, res) => {
   try {
-    const { full_name, email, mobile, password } = req.body;
-
     // ==========================
     // Validate Request
     // ==========================
@@ -164,68 +242,16 @@ const register = async (req, res) => {
     }
 
     // ==========================
-    // Check Existing User
+    // Register Owner + Hotel
     // ==========================
 
-    const [existingUser] = await db.query(
-      "SELECT id FROM users WHERE email = ?",
-      [email.trim().toLowerCase()],
-    );
-
-    if (existingUser.length > 0) {
-      return errorResponse(res, "Email already registered", 409);
-    }
+    const user = await authService.registerOwner(req.body);
 
     // ==========================
-    // Hash Password
+    // Generate JWT
     // ==========================
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // ==========================
-    // Get Default Role
-    // ==========================
-
-    const [roles] = await db.query("SELECT id FROM roles WHERE role_name = ?", [
-      "Receptionist",
-    ]);
-
-    if (roles.length === 0) {
-      return errorResponse(res, "Default role not found", 500);
-    }
-
-    const roleId = roles[0].id;
-
-    // ==========================
-    // Insert User
-    // ==========================
-
-    const [result] = await db.query(
-      `INSERT INTO users
-      (
-        full_name,
-        email,
-        password,
-        mobile,
-        role_id,
-        auth_provider
-      )
-      VALUES (?, ?, ?, ?, ?, ?)`,
-      [
-        full_name.trim(),
-        email.trim().toLowerCase(),
-        hashedPassword,
-        mobile.trim(),
-        roleId,
-        "email",
-      ],
-    );
-
-    const [newUser] = await db.query("SELECT * FROM users WHERE id = ?", [
-      result.insertId,
-    ]);
-
-    user = newUser[0];
+    const token = generateToken(user);
 
     // ==========================
     // Success Response
@@ -233,18 +259,32 @@ const register = async (req, res) => {
 
     return successResponse(
       res,
-      "User registered successfully",
+      "Hotel registered successfully",
       {
-        userId: result.insertId,
+        token,
+        user: {
+          id: user.id,
+          hotel_id: user.hotel_id,
+          full_name: user.full_name,
+          email: user.email,
+          mobile: user.mobile,
+          role_id: user.role_id,
+          auth_provider: user.auth_provider,
+        },
       },
       201,
     );
   } catch (error) {
     console.error(error);
 
-    return errorResponse(res, "Internal Server Error", 500);
+    if (error.message === "Email already registered") {
+      return errorResponse(res, error.message, 409);
+    }
+
+    return errorResponse(res, error.message || "Internal Server Error", 500);
   }
 };
+
 //login function
 const login = async (req, res) => {
   try {
@@ -265,8 +305,10 @@ const login = async (req, res) => {
     // ==========================
 
     const [users] = await db.query(
-      `SELECT
+      `
+      SELECT
       u.id,
+      u.hotel_id,
       u.full_name,
       u.email,
       u.password,
@@ -275,11 +317,23 @@ const login = async (req, res) => {
       u.role_id,
       r.role_name,
       u.auth_provider,
-      u.is_active
-   FROM users u
-   INNER JOIN roles r
-   ON u.role_id = r.id
-   WHERE u.email = ?`,
+      u.is_active,
+
+      h.hotel_name,
+      h.hotel_logo,
+      h.subscription_plan,
+      h.setup_completed
+
+      FROM users u
+
+      INNER JOIN roles r
+      ON u.role_id = r.id
+
+      INNER JOIN hotels h
+      ON u.hotel_id = h.id
+
+      WHERE u.email = ?
+      `,
       [email.trim().toLowerCase()],
     );
     if (users.length === 0) {
@@ -326,8 +380,10 @@ const login = async (req, res) => {
 
     return successResponse(res, "Login successful", {
       token,
+
       user: {
         id: user.id,
+        hotel_id: user.hotel_id,
         full_name: user.full_name,
         email: user.email,
         mobile: user.mobile,
@@ -339,6 +395,14 @@ const login = async (req, res) => {
 
         auth_provider: user.auth_provider,
         profile_image: user.profile_image,
+      },
+
+      hotel: {
+        id: user.hotel_id,
+        name: user.hotel_name,
+        logo: user.hotel_logo,
+        subscription_plan: user.subscription_plan,
+        setup_completed: user.setup_completed,
       },
     });
   } catch (error) {

@@ -79,6 +79,7 @@ const LoginScreen = () => {
       };
 
       const response = await AuthAPI.login(payload);
+      console.log('LOGIN RESPONSE', JSON.stringify(response.data, null, 2));
 
       if (response.success) {
         await login(response.data.token, response.data.user);
@@ -108,25 +109,43 @@ const LoginScreen = () => {
   };
 
   // google signin function
+  // const handleGoogleSignIn = async () => {
+  //   try {
+  //     setGoogleLoading(true);
+
+  //     const response = await GoogleAuthService.signIn();
+
+  //     await login(response.token, response.user);
+  //     console.log('Frontend-user', response.user);
+
+  //     setGoogleLoading(false);
+
+  //     navigation.replace('Dashboard');
+  //   } catch (error) {
+  //     setGoogleLoading(false);
+
+  //     console.log(error);
+  //   }
+  // };
+
   const handleGoogleSignIn = async () => {
     try {
       setGoogleLoading(true);
 
-      const response = await GoogleAuthService.signIn();
+      const result = await GoogleAuthService.signIn();
 
-      await login(response.token, response.user);
-      console.log('Frontend-user', response.user);
+      if (!result) return;
 
+      await login(result.token, result.user);
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Dashboard' }],
+      });
+    } finally {
       setGoogleLoading(false);
-
-      navigation.replace('Dashboard');
-    } catch (error) {
-      setGoogleLoading(false);
-
-      console.log(error);
     }
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" translucent={true} animated={true} />
@@ -154,48 +173,6 @@ const LoginScreen = () => {
             style={styles.overlay}
           />
         </View>
-
-        {/* <Card style={styles.featureCard}>
-          <View style={styles.featureContainer}>
-            <View style={styles.featureItem}>
-              <View style={styles.iconCircle}>
-                <Icon
-                  source="shield-check-outline"
-                  size={28}
-                  color={COLORS.primary}
-                />
-              </View>
-
-              <Text style={styles.featureTitle}>Secure Access</Text>
-
-              <Text style={styles.featureSubTitle}>Safe & Protected</Text>
-            </View>
-
-            <View style={styles.featureItem}>
-              <View style={styles.iconCircle}>
-                <Icon source="chart-line" size={28} color={COLORS.primary} />
-              </View>
-
-              <Text style={styles.featureTitle}>Real-time Updates</Text>
-
-              <Text style={styles.featureSubTitle}>Live Booking Status</Text>
-            </View>
-
-            <View style={styles.featureItem}>
-              <View style={styles.iconCircle}>
-                <Icon
-                  source="clock-time-four-outline"
-                  size={28}
-                  color={COLORS.primary}
-                />
-              </View>
-
-              <Text style={styles.featureTitle}>24/7 Management</Text>
-
-              <Text style={styles.featureSubTitle}>Anytime Anywhere</Text>
-            </View>
-          </View>
-        </Card> */}
 
         {/* login */}
 

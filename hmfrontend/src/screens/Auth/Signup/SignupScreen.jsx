@@ -1,28 +1,26 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Alert } from 'react-native';
-
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import styles from './SignupStyles';
+import { textInputTheme } from '../../../constants/paperTheme';
+import LinearGradient from 'react-native-linear-gradient';
 
 import {
   TextInput,
   Checkbox,
   HelperText,
   ActivityIndicator,
-  Icon,
 } from 'react-native-paper';
 
-import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-
 import AuthAPI from '../../../api/authApi';
-
-import styles from './SignupStyles';
-import { textInputTheme } from '../../../constants/paperTheme';
 import GoogleAuthService from '../../../services/googleAuthService';
+import { useAuth } from '../../../context/AuthContext';
 
 const SignupScreen = () => {
   const navigation = useNavigation();
+  const { login } = useAuth();
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -102,7 +100,7 @@ const SignupScreen = () => {
     }
 
     try {
-      signupLoading(true);
+      setSignupLoading(true);
 
       const payload = {
         full_name: fullName,
@@ -114,7 +112,7 @@ const SignupScreen = () => {
 
       const response = await AuthAPI.register(payload);
 
-      signupLoading(false);
+      setSignupLoading(false);
 
       setFullName('');
       setEmail('');
@@ -136,7 +134,7 @@ const SignupScreen = () => {
         ],
       );
     } catch (error) {
-      signupLoading(false);
+      setSignupLoading(false);
 
       Alert.alert(
         'Registration Failed',
@@ -146,10 +144,44 @@ const SignupScreen = () => {
   };
 
   // google signin function
+  // const handleGoogleSignIn = async () => {
+  //   try {
+  //     setGoogleLoading(true);
+  //     await GoogleAuthService.signIn(navigation);
+  //   } finally {
+  //     setGoogleLoading(false);
+  //   }
+  // };
+
   const handleGoogleSignIn = async () => {
     try {
       setGoogleLoading(true);
-      await GoogleAuthService.signIn(navigation);
+
+      console.log('STEP 1');
+
+      const result = await GoogleAuthService.signIn();
+
+      console.log('STEP 2', result);
+
+      if (!result) {
+        console.log('STEP 3 - result null');
+        return;
+      }
+
+      console.log('STEP 4 - before login');
+
+      await login(result.token, result.user);
+
+      console.log('STEP 5 - login completed');
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Dashboard' }],
+      });
+
+      console.log('STEP 6 - navigation called');
+    } catch (e) {
+      console.log('GOOGLE FLOW ERROR', e);
     } finally {
       setGoogleLoading(false);
     }

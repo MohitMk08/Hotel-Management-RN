@@ -5,12 +5,21 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 
-import { statsData, quickActionData } from '../../constants/data';
+import {
+  statsData,
+  quickActionData,
+  roomStatusData,
+  bookingListData,
+} from '../../constants/data';
+import COLORS from '../../constants/colors';
 
 import AppHeader from '../../components/AppHeader/AppHeader';
 import StatsCard from '../../components/DashComp/StatCards/StatsCard';
 import Banner from '../../components/DashComp/HotelBanner/Banner';
 import QuickActions from '../../components/DashComp/QuickActions/QuickActions';
+import RoomStatus from '../../components/DashComp/RoomStatus/RoomStatus';
+import BookingList from '../../components/DashComp/BookingList/BookingList';
+import BottomNav from '../../components/BottomNav/BottomNav';
 
 const DashboardScreen = () => {
   const navigation = useNavigation();
@@ -30,7 +39,7 @@ const DashboardScreen = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.sAriaContainer}>
       <StatusBar barStyle="dark-content" translucent={true} animated={true} />
       <View style={styles.container}>
         <AppHeader
@@ -58,8 +67,19 @@ const DashboardScreen = () => {
           <View style={styles.quickSection}>
             <QuickActions data={quickActionData} />
           </View>
+
+          {/* Room status section */}
+          <View style={styles.roomStatusSection}>
+            <RoomStatus data={roomStatusData} />
+          </View>
+
+          <View style={styles.bookingListSection}>
+            <BookingList data={bookingListData} />
+          </View>
         </ScrollView>
+        {/* <BottomNav /> */}
       </View>
+      <BottomNav />
     </SafeAreaView>
   );
 };

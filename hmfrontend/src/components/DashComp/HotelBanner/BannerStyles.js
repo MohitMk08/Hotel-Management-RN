@@ -1,64 +1,61 @@
 import { StyleSheet } from 'react-native';
-
 import COLORS from '../../../constants/colors';
 
-const styles = StyleSheet.create({
+export default StyleSheet.create({
   container: {
-    paddingVertical: 10,
-    height: 170,
-    borderRadius: 10,
-    overflow: 'hidden',
-    justifyContent: 'center',
+    marginHorizontal: 15,
   },
 
-  backgroundImage: {
-    borderRadius: 10,
+  banner: {
     height: 170,
-    width: 'auto',
+    borderRadius: 12,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    padding: 0,
+
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 4,
   },
+
+  // image: {
+  //   borderRadius: 20,
+  // },
+
+  // overlay: {
+  //   // flex: 1,
+  //   justifyContent: 'center',
+  //   paddingHorizontal: 18,
+  //   backgroundColor: 'rgba(255,255,255,.08)',
+  // },
 
   content: {
     width: '50%',
-    paddingLeft: 10,
-    zIndex: 2,
+    marginTop: 15,
+    marginLeft: 15,
   },
 
   title: {
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '700',
     color: COLORS.black,
   },
 
   titleBlue: {
+    fontSize: 14,
+    fontWeight: '700',
     color: COLORS.primary,
   },
 
   subtitle: {
-    marginTop: 8,
+    marginTop: 6,
     fontSize: 10,
+    lineHeight: 14,
     color: COLORS.textPrimary,
   },
-
-  //   button: {
-  //     marginTop: 20,
-
-  //     alignSelf: 'flex-start',
-
-  //     backgroundColor: '#2563EB',
-
-  //     paddingHorizontal: 18,
-  //     paddingVertical: 11,
-
-  //     borderRadius: 12,
-  //   },
-
-  //   buttonText: {
-  //     color: COLORS.white,
-
-  //     fontWeight: '700',
-
-  //     fontSize: 14,
-  //   },
 });
-
-export default styles;

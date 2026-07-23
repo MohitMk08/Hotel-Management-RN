@@ -2,33 +2,37 @@ import { StyleSheet } from 'react-native';
 import COLORS from '../../constants/colors';
 
 const styles = StyleSheet.create({
-  container: {
+  sAriaContainer: {
     flex: 1,
     backgroundColor: COLORS.background,
   },
 
-  body: {
+  container: {
     flex: 1,
-    padding: 20,
-  },
-  pageTitle: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: COLORS.textPrimary,
-    marginBottom: 24,
+    backgroundColor: COLORS.background,
+    paddingBottom: 55,
   },
 
   statsSection: {
-    height: 150,
-    paddingHorizontal: 14,
+    marginTop: 6,
   },
+
   bannerSection: {
-    height: 200,
-    paddingHorizontal: 14,
+    marginTop: 10,
   },
+
   quickSection: {
-    height: 150,
-    paddingHorizontal: 14,
+    marginTop: 10,
+  },
+
+  roomStatusSection: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+
+  bookingListSection: {
+    marginTop: 10,
+    marginBottom: 12,
   },
 });
 

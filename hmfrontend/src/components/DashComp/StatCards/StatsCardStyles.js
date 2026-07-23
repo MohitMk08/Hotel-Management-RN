@@ -1,53 +1,53 @@
 import { StyleSheet } from 'react-native';
 import COLORS from '../../../constants/colors';
 
-const styles = StyleSheet.create({
+export default StyleSheet.create({
   listContainer: {
-    Height: 150,
-    paddingVertical: 10,
+    paddingHorizontal: 15,
+    paddingBottom: 10,
   },
 
   card: {
-    minWidth: 120,
-    maxWidth: 160,
-    padding: 10,
-    borderRadius: 10,
+    minWidth: 115,
+    height: 125,
     backgroundColor: COLORS.white,
+    borderRadius: 12,
+    marginRight: 15,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 14,
-
     shadowColor: '#000',
+    padding: 15,
+
     shadowOffset: {
       width: 0,
       height: 3,
     },
+
     shadowOpacity: 0.08,
     shadowRadius: 8,
-    elevation: 5,
+    elevation: 4,
   },
 
   iconContainer: {
-    width: 45,
-    height: 45,
-    borderRadius: 26,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-
-    marginBottom: 3,
+    marginBottom: 8,
   },
 
   value: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '700',
     color: COLORS.black,
   },
 
   title: {
-    marginTop: 6,
+    marginTop: 4,
     fontSize: 12,
     color: COLORS.textSecondary,
+    fontWeight: '500',
     textAlign: 'center',
   },
 });
-
-export default styles;

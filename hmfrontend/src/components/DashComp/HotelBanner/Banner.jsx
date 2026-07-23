@@ -1,35 +1,31 @@
 import React from 'react';
-import { ImageBackground, Text, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, Text, View } from 'react-native';
 
 import styles from './BannerStyles';
 
-const HotelBanner = () => {
+const Banner = () => {
   return (
-    <ImageBackground
-      source={require('../../../assets/images/Banner-HM.png')}
-      resizeMode="cover"
-      style={styles.container}
-      imageStyle={styles.backgroundImage}
-    >
-      {/* Content */}
+    <View style={styles.container}>
+      <ImageBackground
+        source={require('../../../assets/images/Banner-HM.png')}
+        resizeMode="cover"
+        imageStyle={styles.image}
+        style={styles.banner}
+      >
+        {/* <View style={styles.overlay}> */}
+        <View style={styles.content}>
+          <Text style={styles.title}>Hotel Room Booking</Text>
 
-      <View style={styles.content}>
-        <Text style={styles.title}>
-          Hotel Room Booking
-          {'\n'}
           <Text style={styles.titleBlue}>Management System</Text>
-        </Text>
 
-        <Text style={styles.subtitle}>
-          Manage bookings, rooms, guests and more — all in one place.
-        </Text>
-
-        {/* <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Explore Dashboard</Text>
-        </TouchableOpacity> */}
-      </View>
-    </ImageBackground>
+          <Text style={styles.subtitle}>
+            Manage bookings, rooms, guests and more — all in one place.
+          </Text>
+        </View>
+        {/* </View> */}
+      </ImageBackground>
+    </View>
   );
 };
 
-export default HotelBanner;
+export default Banner;

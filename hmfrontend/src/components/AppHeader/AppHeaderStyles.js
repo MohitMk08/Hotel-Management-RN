@@ -3,37 +3,47 @@ import COLORS from '../../constants/colors';
 
 export default StyleSheet.create({
   container: {
-    height: 72,
+    height: 60,
+    paddingHorizontal: 15,
 
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-
-    paddingHorizontal: 14,
-
     backgroundColor: COLORS.background,
+    marginTop: -10,
   },
 
   leftSection: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
 
   menuButton: {
-    marginRight: 5,
+    marginRight: 8,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
+  greetingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   greeting: {
-    fontSize: 12,
+    fontSize: 15,
     fontWeight: '500',
-    color: COLORS.textPrimary,
+    color: COLORS.textSecondary,
   },
 
   userName: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: '700',
-    color: COLORS.primaryLight,
+    color: COLORS.primary,
     marginTop: 2,
+    maxWidth: 170,
   },
   rightSection: {
     flexDirection: 'row',
@@ -41,28 +51,42 @@ export default StyleSheet.create({
   },
 
   notificationButton: {
-    marginRight: 12,
+    marginRight: 4,
+  },
+
+  logoutButton: {
+    marginHorizontal: 2,
   },
 
   badge: {
     position: 'absolute',
-    right: 14,
-    top: 12,
-
-    width: 9,
-    height: 9,
-    borderRadius: 5,
-
+    right: 12,
+    top: 10,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
     backgroundColor: '#EF4444',
     borderWidth: 2,
-    borderColor: COLORS.white,
+    borderColor: '#fff',
   },
-
   avatarPlaceholder: {
     backgroundColor: '#E5E7EB',
   },
 
-  logoutButton: {
-    marginRight: 4,
+  profileButton: {
+    marginLeft: 4,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+    borderRadius: 25,
+  },
+
+  iconButton: {
+    marginRight: 10,
   },
 });

@@ -1,23 +1,16 @@
 import { StyleSheet } from 'react-native';
-
 import COLORS from '../../../constants/colors';
 
-const styles = StyleSheet.create({
+export default StyleSheet.create({
   container: {
-    paddingVertical: 10,
+    marginHorizontal: 15,
   },
 
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
-  },
-
-  viewAll: {
-    color: COLORS.primary,
-    fontSize: 12,
-    fontWeight: '600',
+    // marginBottom: 10,
   },
 
   heading: {
@@ -26,44 +19,52 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
 
+  viewAllContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  viewAll: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.primary,
+    marginRight: 2,
+  },
+
+  listContainer: {
+    paddingHorizontal: 3,
+    paddingVertical: 10,
+  },
+
   card: {
-    width: 130,
-    height: 120,
-    marginRight: 16,
+    minWidth: 110,
+    height: 104,
     backgroundColor: COLORS.white,
-    borderRadius: 10,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 15,
-
+    marginRight: 15,
     shadowColor: '#000',
+    padding: 10,
     shadowOffset: {
       width: 0,
       height: 3,
     },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
 
-    elevation: 5,
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 4,
   },
 
   iconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 27,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
 
   title: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
-
     color: COLORS.textPrimary,
-
     textAlign: 'center',
+    paddingHorizontal: 6,
   },
 });
-
-export default styles;

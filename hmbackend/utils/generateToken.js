@@ -4,8 +4,9 @@ const generateToken = (user) => {
   return jwt.sign(
     {
       id: user.id,
+      hotel_id: user.hotel_id,
+      role_id: user.role_id,
       email: user.email,
-      role: user.role_id,
     },
     process.env.JWT_SECRET,
     {

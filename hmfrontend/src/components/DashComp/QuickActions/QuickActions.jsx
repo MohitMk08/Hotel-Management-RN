@@ -18,15 +18,8 @@ const QuickActions = ({ data }) => {
         }
       }}
     >
-      <View
-        style={[
-          styles.iconContainer,
-          {
-            backgroundColor: item.color + '15',
-          },
-        ]}
-      >
-        <Icon source={item.icon} size={28} color={item.color} />
+      <View style={styles.iconContainer}>
+        <Icon source={item.icon} size={36} color={item.color} />
       </View>
 
       <Text style={styles.title}>{item.title}</Text>
@@ -38,17 +31,20 @@ const QuickActions = ({ data }) => {
       <View style={styles.header}>
         <Text style={styles.heading}>Quick Actions</Text>
 
-        <Pressable>
+        <Pressable style={styles.viewAllContainer}>
           <Text style={styles.viewAll}>View All</Text>
+
+          <Icon source="chevron-right" size={20} color="#2563EB" />
         </Pressable>
       </View>
 
       <FlatList
-        data={data}
         horizontal
-        keyExtractor={item => item.id}
+        data={data}
         renderItem={renderItem}
+        keyExtractor={item => item.id}
         showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.listContainer}
       />
     </View>
   );
