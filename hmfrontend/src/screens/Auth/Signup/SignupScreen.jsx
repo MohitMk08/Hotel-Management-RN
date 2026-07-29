@@ -176,7 +176,7 @@ const SignupScreen = () => {
 
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Dashboard' }],
+        routes: [{ name: 'Home' }],
       });
 
       console.log('STEP 6 - navigation called');

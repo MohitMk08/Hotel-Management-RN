@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import LoginScreen from '../screens/Auth/Login/LoginScreen';
 import SignupScreen from '../screens/Auth/Signup/SignupScreen';
-import DashboardScreen from '../screens/Dashboard/DashboardScreen';
+import HomeStack from './HomeStack';
 import SplashScreen from '../screens/Auth/Splash/SplashScreen';
 // import ForgotPasswordScreen from '../screens/Auth/forgotPassword/ForgotPasswordScreen';
 
@@ -18,7 +18,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
         {/* <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} /> */}
-        <Stack.Screen name="Dashboard" component={DashboardScreen} />
+        <Stack.Screen name="Home" component={HomeStack} />
       </Stack.Navigator>
     </NavigationContainer>
   );

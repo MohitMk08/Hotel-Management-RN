@@ -6,8 +6,8 @@ export default StyleSheet.create({
     position: 'absolute',
     width: '100%',
     bottom: 0,
-    height: 80,
-    paddingVertical: 0,
+    marginHorizontal: 0,
+    height: 95,
     backgroundColor: COLORS.white,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -16,7 +16,6 @@ export default StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 10,
     elevation: 6,
-    borderRadius: 15,
   },
 
   tab: {

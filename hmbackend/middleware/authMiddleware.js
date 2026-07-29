@@ -5,6 +5,10 @@ const authMiddleware = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
+    // console.log("========== AUTH DEBUG ==========");
+    // console.log(req.headers.authorization);
+    // console.log("===============================");
+
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return errorResponse(res, "Unauthorized", 401);
     }

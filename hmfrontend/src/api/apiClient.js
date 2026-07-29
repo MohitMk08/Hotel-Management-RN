@@ -1,15 +1,8 @@
 import axios from 'axios';
-// export default apiClient;
+
 import CONFIG from '../constants/config';
-/*
-|--------------------------------------------------------------------------
-| Base URL
-|--------------------------------------------------------------------------
-| Android Emulator : http://10.0.2.2:5000
-| Real Device      : http://YOUR_PC_IP:5000
-| iOS Simulator    : http://localhost:5000
-|--------------------------------------------------------------------------
-*/
+
+import StorageService from '../services/storageService';
 
 const apiClient = axios.create({
   baseURL: CONFIG.API_BASE_URL,
@@ -18,5 +11,24 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+/*
+|--------------------------------------------------------------------------
+| Attach JWT Token Automatically
+|--------------------------------------------------------------------------
+*/
+
+apiClient.interceptors.request.use(
+  async config => {
+    const token = await StorageService.getToken();
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  error => Promise.reject(error),
+);
 
 export default apiClient;

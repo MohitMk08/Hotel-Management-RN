@@ -8,10 +8,14 @@ const db = require("./config/database");
 const app = express();
 
 const authRoutes = require("./routes/authRoute");
+const roomTypeRoutes = require("./routes/roomTypeRoutes");
+const roomRoutes = require("./routes/roomRoutes");
 
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
+app.use("/api/room-types", roomTypeRoutes);
+app.use("/api/rooms", roomRoutes);
 
 app.get("/", (req, res) => {
   res.json({

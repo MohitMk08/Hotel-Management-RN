@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
-    paddingBottom: 55,
+    paddingBottom: 70,
   },
 
   statsSection: {

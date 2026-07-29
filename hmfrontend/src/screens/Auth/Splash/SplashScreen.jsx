@@ -13,7 +13,7 @@ const SplashScreen = ({ navigation }) => {
       const user = await StorageService.getUser();
 
       if (token && user) {
-        navigation.replace('Dashboard');
+        navigation.replace('Home');
       } else {
         navigation.replace('Login');
       }

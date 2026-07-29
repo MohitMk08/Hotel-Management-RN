@@ -88,7 +88,12 @@ const LoginScreen = () => {
         Alert.alert('Success', 'Login successful!', [
           {
             text: 'OK',
-            onPress: () => navigation.replace('Dashboard'),
+            onPress: () => {
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Home' }],
+              });
+            },
           },
         ]);
         setEmail('');
@@ -140,7 +145,7 @@ const LoginScreen = () => {
 
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Dashboard' }],
+        routes: [{ name: 'Home' }],
       });
     } finally {
       setGoogleLoading(false);
