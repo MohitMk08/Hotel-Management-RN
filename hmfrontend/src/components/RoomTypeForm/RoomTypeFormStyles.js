@@ -10,14 +10,10 @@ const styles = StyleSheet.create({
 
   container: {
     backgroundColor: '#FFFFFF',
-
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
-
     paddingBottom: 30,
-
     elevation: 10,
-
     shadowColor: '#000',
 
     shadowOffset: {
@@ -37,13 +33,9 @@ const styles = StyleSheet.create({
     height: 6,
 
     borderRadius: 20,
-
     backgroundColor: '#D1D5DB',
-
     alignSelf: 'center',
-
     marginTop: 14,
-
     marginBottom: 20,
   },
 
@@ -54,28 +46,19 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 24,
-
     fontWeight: '800',
-
     color: COLORS.primaryDark,
-
     textAlign: 'center',
-
     letterSpacing: 0.5,
   },
 
   subtitle: {
     marginTop: 6,
-
-    marginBottom: 22,
-
+    marginBottom: 10,
     textAlign: 'center',
-
     color: COLORS.placeholder,
-
     fontSize: 15,
-
-    lineHeight: 22,
+    lineHeight: 18,
   },
 
   sectionTitle: {
@@ -110,37 +93,32 @@ const styles = StyleSheet.create({
 
   cancelButton: {
     width: '46%',
-
     height: 54,
-
     borderRadius: 14,
-
     justifyContent: 'center',
   },
 
   saveButton: {
     width: '50%',
-
     height: 54,
-
     borderRadius: 14,
-
     justifyContent: 'center',
+    backgroundColor: COLORS.primary,
   },
 
   saveButtonLabel: {
     fontSize: 16,
-
     fontWeight: '700',
+    color: COLORS.white,
   },
 
   cancelButtonLabel: {
     fontSize: 16,
-
-    fontWeight: '600',
+    fontWeight: '800',
+    color: COLORS.danger,
   },
   errorText: {
-    color: '#E53935',
+    color: COLORS.danger,
     fontSize: 12,
     marginTop: -10,
     marginBottom: 12,
@@ -152,13 +130,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#111827',
     marginBottom: 14,
-    marginTop: 18,
-  },
-
-  saveButtonLabel: {
-    fontWeight: '700',
-    fontSize: 16,
-    letterSpacing: 0.5,
+    marginTop: 10,
   },
 });
 

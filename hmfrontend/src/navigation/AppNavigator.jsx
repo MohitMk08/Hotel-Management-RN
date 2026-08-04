@@ -6,6 +6,8 @@ import LoginScreen from '../screens/Auth/Login/LoginScreen';
 import SignupScreen from '../screens/Auth/Signup/SignupScreen';
 import HomeStack from './HomeStack';
 import SplashScreen from '../screens/Auth/Splash/SplashScreen';
+import MyProfileScreen from '../screens/Profile/MyProfile/MyProfileScreen';
+import SettingsScreen from '../screens/Settings/SettingsScreen';
 // import ForgotPasswordScreen from '../screens/Auth/forgotPassword/ForgotPasswordScreen';
 
 const Stack = createNativeStackNavigator();
@@ -19,6 +21,12 @@ const AppNavigator = () => {
         <Stack.Screen name="Signup" component={SignupScreen} />
         {/* <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} /> */}
         <Stack.Screen name="Home" component={HomeStack} />
+        <Stack.Screen name="MyProfile" component={MyProfileScreen} />
+        <Stack.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

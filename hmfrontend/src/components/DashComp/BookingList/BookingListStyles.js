@@ -94,7 +94,7 @@ export default StyleSheet.create({
   },
 
   avatarPlaceholder: {
-    backgroundColor: '#EEF2FF',
+    backgroundColor: COLORS.surfaceAccent,
   },
 
   avatarText: {

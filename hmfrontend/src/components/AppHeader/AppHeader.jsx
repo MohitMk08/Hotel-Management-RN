@@ -37,13 +37,13 @@ const AppHeader = ({
         </TouchableOpacity>
 
         {/* Temporary Logout */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.iconButton}
           activeOpacity={0.7}
           onPress={onLogoutPress}
         >
           <Icon source="logout" size={26} color={COLORS.textPrimary} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity
           activeOpacity={0.8}
@@ -56,6 +56,7 @@ const AppHeader = ({
             <Avatar.Icon
               size={40}
               icon="account"
+              color={COLORS.primary}
               style={styles.avatarPlaceholder}
             />
           )}

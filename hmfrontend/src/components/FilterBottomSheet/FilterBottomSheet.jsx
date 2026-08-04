@@ -39,7 +39,8 @@ const FilterBottomSheet = ({
 
               <View style={styles.chipsContainer}>
                 {section.options.map(option => {
-                  const active = selected[section.key] === option;
+                  // const active = selected[section.key] === option;
+                  const active = selected[section.key]?.includes(option);
 
                   return (
                     <Chip

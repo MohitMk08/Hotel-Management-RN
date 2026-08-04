@@ -51,7 +51,7 @@ export const quickActionData = [
     title: 'Guests',
     icon: 'account-group-outline',
     color: '#8B5CF6',
-    screen: '',
+    screen: 'GuestList',
   },
   {
     id: '4',

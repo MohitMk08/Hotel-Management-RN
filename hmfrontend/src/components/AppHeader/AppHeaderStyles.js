@@ -70,20 +70,33 @@ export default StyleSheet.create({
     borderColor: '#fff',
   },
   avatarPlaceholder: {
-    backgroundColor: '#E5E7EB',
+    backgroundColor: '#EEF4FF',
+
+    borderWidth: 1,
+    borderColor: '#D6E4FF',
   },
 
   profileButton: {
-    marginLeft: 4,
+    marginLeft: 8,
+
+    borderRadius: 22,
+
+    overflow: 'hidden',
+
+    backgroundColor: '#FFFFFF',
+
     shadowColor: '#000',
+
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 3,
     },
+
     shadowOpacity: 0.08,
+
     shadowRadius: 8,
-    elevation: 3,
-    borderRadius: 25,
+
+    elevation: 4,
   },
 
   iconButton: {

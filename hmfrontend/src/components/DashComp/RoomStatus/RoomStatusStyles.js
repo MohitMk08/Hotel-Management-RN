@@ -55,11 +55,10 @@ export default StyleSheet.create({
   },
 
   item: {
-    width: 150,
+    width: 170,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    // marginHorizontal: 10,
   },
 
   divider: {

@@ -191,6 +191,8 @@ const AddRoomScreen = ({ navigation, route }) => {
                   </View>
                 </Pressable>
               }
+              mode="elevated"
+              contentStyle={{ backgroundColor: '#fff' }}
             >
               {roomTypes.map(item => (
                 <Menu.Item
@@ -200,6 +202,8 @@ const AddRoomScreen = ({ navigation, route }) => {
                     updateField('room_type_id', Number(item.id));
                     setRoomTypeVisible(false);
                   }}
+                  containerStyle={{ width: 300 }}
+                  titleStyle={{ color: '#000' }}
                 />
               ))}
             </Menu>

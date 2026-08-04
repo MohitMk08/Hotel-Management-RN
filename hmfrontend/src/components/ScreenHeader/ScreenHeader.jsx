@@ -6,17 +6,7 @@ import { IconButton, Text } from 'react-native-paper';
 import styles from './ScreenHeaderStyles';
 import COLORS from '../../constants/colors';
 
-const ScreenHeader = ({
-  title,
-  onBackPress,
-
-  // Old Props (keep for backward compatibility)
-  rightIcon,
-  onRightPress,
-
-  // New Props
-  rightActions = [],
-}) => {
+const ScreenHeader = ({ title, onBackPress, rightActions = [] }) => {
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.container}>
@@ -34,28 +24,15 @@ const ScreenHeader = ({
         </View>
 
         <View style={styles.rightSection}>
-          {/* New Multiple Icons */}
-          {rightActions.length > 0 ? (
-            rightActions.map((item, index) => (
-              <IconButton
-                key={index}
-                icon={item.icon}
-                size={24}
-                iconColor={COLORS.black}
-                onPress={item.onPress}
-              />
-            ))
-          ) : rightIcon ? (
-            // Old Single Icon
+          {rightActions.map((item, index) => (
             <IconButton
-              icon={rightIcon}
+              key={index}
+              icon={item.icon}
               size={24}
               iconColor={COLORS.black}
-              onPress={onRightPress}
+              onPress={item.onPress}
             />
-          ) : (
-            <View style={styles.placeholder} />
-          )}
+          ))}
         </View>
       </View>
     </SafeAreaView>
