@@ -20,19 +20,40 @@ const tabs = [
   {
     name: 'Rooms',
     icon: 'bed-king',
-    screen: 'Rooms',
+    screen: 'RoomList',
   },
   {
     name: 'Guests',
     icon: 'account-group',
-    screen: 'Guests',
+    screen: 'GuestList',
   },
   {
     name: 'More',
     icon: 'view-grid-outline',
-    screen: 'More',
+    screen: 'Settings',
   },
 ];
+
+const dashboardRoutes = ['Dashboard'];
+
+const bookingRoutes = [
+  'Bookings',
+  'AddBooking',
+  'BookingDetails',
+  'EditBooking',
+];
+
+const roomRoutes = [
+  'RoomList',
+  'AddRoom',
+  'RoomDetails',
+  'EditRoom',
+  'RoomTypeList',
+];
+
+const guestRoutes = ['GuestList', 'AddGuest', 'GuestDetails', 'EditGuest'];
+
+const settingsRoutes = ['Settings', 'MyProfile'];
 
 const BottomNav = () => {
   const navigation = useNavigation();
@@ -41,19 +62,29 @@ const BottomNav = () => {
   return (
     <View style={styles.container}>
       {tabs.map(tab => {
-        const active = route.name === tab.screen;
+        const active =
+          (tab.screen === 'Dashboard' &&
+            dashboardRoutes.includes(route.name)) ||
+          (tab.screen === 'Bookings' && bookingRoutes.includes(route.name)) ||
+          (tab.screen === 'RoomList' && roomRoutes.includes(route.name)) ||
+          (tab.screen === 'GuestList' && guestRoutes.includes(route.name)) ||
+          (tab.screen === 'Settings' && settingsRoutes.includes(route.name));
 
         return (
           <Pressable
             key={tab.name}
             style={styles.tab}
-            android_ripple={{ color: '#EEF4FF' }}
-            onPress={() => navigation.navigate(tab.screen)}
+            android_ripple={{ color: COLORS.surfaceAccent }}
+            onPress={() => {
+              if (route.name !== tab.screen) {
+                navigation.navigate(tab.screen);
+              }
+            }}
           >
             <Icon
               source={tab.icon}
               size={24}
-              color={active ? COLORS.primary : '#9CA3AF'}
+              color={active ? COLORS.primary : COLORS.textSecondary}
             />
 
             <Text style={[styles.label, active && styles.activeLabel]}>

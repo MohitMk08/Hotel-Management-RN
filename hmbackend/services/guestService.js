@@ -248,6 +248,33 @@ const deleteGuest = async (guestId, hotel_id) => {
   );
 };
 
+// ======================================
+// Get Guest For Booking
+// ======================================
+
+const getGuestForBooking = async (guestId, hotel_id) => {
+  const [rows] = await db.query(
+    `
+    SELECT
+        id,
+        first_name,
+        last_name,
+        mobile,
+        vip_status
+
+    FROM guests
+
+    WHERE
+        id = ?
+        AND hotel_id = ?
+        AND is_active = 1
+    `,
+    [guestId, hotel_id],
+  );
+
+  return rows[0];
+};
+
 module.exports = {
   guestExists,
   generateGuestCode,
@@ -256,4 +283,5 @@ module.exports = {
   getGuestById,
   updateGuest,
   deleteGuest,
+  getGuestForBooking,
 };

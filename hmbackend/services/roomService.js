@@ -255,6 +255,38 @@ const deleteRoom = async (roomId, hotel_id) => {
   );
 };
 
+// ======================================
+// Get Room For Booking
+// ======================================
+
+const getRoomForBooking = async (roomId, hotel_id) => {
+  const [rows] = await db.query(
+    `
+    SELECT
+        r.id,
+        r.room_number,
+        r.room_status,
+
+       rt.type_name,
+rt.base_price,
+rt.max_capacity
+
+    FROM rooms r
+
+    INNER JOIN room_types rt
+        ON rt.id = r.room_type_id
+
+    WHERE
+        r.id = ?
+        AND r.hotel_id = ?
+        AND r.is_active = 1
+    `,
+    [roomId, hotel_id],
+  );
+
+  return rows[0];
+};
+
 module.exports = {
   roomNumberExists,
   roomTypeExists,
@@ -264,4 +296,5 @@ module.exports = {
   updateRoom,
   roomNumberExistsForUpdate,
   deleteRoom,
+  getRoomForBooking,
 };

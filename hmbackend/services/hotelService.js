@@ -1,20 +1,35 @@
 const db = require("../config/database");
-
+const generateHotelCode = require("../utils/generateHotelCode");
 /**
  * Create Hotel
  */
 const createHotel = async (connection) => {
   const [result] = await connection.query(
-    `INSERT INTO hotels
+    `
+    INSERT INTO hotels
     (
       hotel_name,
       setup_completed
     )
-    VALUES (?, ?)`,
+    VALUES (?, ?)
+    `,
     ["My Hotel", false],
   );
 
-  return result.insertId;
+  const hotelId = result.insertId;
+
+  const hotelCode = generateHotelCode(hotelId);
+
+  await connection.query(
+    `
+    UPDATE hotels
+    SET hotel_code = ?
+    WHERE id = ?
+    `,
+    [hotelCode, hotelId],
+  );
+
+  return hotelId;
 };
 
 /**
@@ -31,7 +46,25 @@ const createHotelSettings = async (connection, hotelId) => {
   );
 };
 
+// ======================================
+// Get Hotel Code
+// ======================================
+
+const getHotelCode = async (hotelId) => {
+  const [rows] = await db.query(
+    `
+    SELECT hotel_code
+    FROM hotels
+    WHERE id = ?
+    `,
+    [hotelId],
+  );
+
+  return rows[0];
+};
+
 module.exports = {
   createHotel,
   createHotelSettings,
+  getHotelCode,
 };

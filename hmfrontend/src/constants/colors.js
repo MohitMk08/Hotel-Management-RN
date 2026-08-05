@@ -19,7 +19,7 @@ const COLORS = {
 
   surfaceSecondary: '#F8FAFC',
 
-  surfaceAccent: '#EEF5FF',
+  surfaceAccent: '#dfebfd',
 
   /* ===========================
       TEXT

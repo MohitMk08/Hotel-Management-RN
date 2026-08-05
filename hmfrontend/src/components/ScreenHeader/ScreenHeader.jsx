@@ -6,7 +6,7 @@ import { IconButton, Text } from 'react-native-paper';
 import styles from './ScreenHeaderStyles';
 import COLORS from '../../constants/colors';
 
-const ScreenHeader = ({ title, onBackPress, rightActions = [] }) => {
+const ScreenHeader = ({ title, subtitle, onBackPress, rightActions = [] }) => {
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.container}>
@@ -18,9 +18,21 @@ const ScreenHeader = ({ title, onBackPress, rightActions = [] }) => {
             iconColor={COLORS.black}
           />
 
-          <Text variant="headlineSmall" style={styles.title}>
-            {title}
-          </Text>
+          <View style={styles.titleContainer}>
+            <Text
+              variant="headlineSmall"
+              style={styles.title}
+              numberOfLines={1}
+            >
+              {title}
+            </Text>
+
+            {subtitle ? (
+              <Text style={styles.subtitle} numberOfLines={1}>
+                {subtitle}
+              </Text>
+            ) : null}
+          </View>
         </View>
 
         <View style={styles.rightSection}>

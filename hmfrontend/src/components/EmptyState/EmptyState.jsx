@@ -1,23 +1,39 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text, Button } from 'react-native-paper';
+
+import { Button, Icon, Text } from 'react-native-paper';
 
 import styles from './EmptyStateStyles';
 
 const EmptyState = ({
+  icon = 'database-off-outline',
+  iconSize = 60,
+  iconColor = '#9DB8F7',
+
   title = 'No Data Found',
   subtitle = 'Create your first record.',
+
   buttonTitle,
+  buttonIcon = 'plus',
   onPress,
 }) => {
   return (
     <View style={styles.container}>
-      <Text variant="headlineSmall">{title}</Text>
+      <Icon source={icon} size={iconSize} color={iconColor} />
+
+      <Text style={styles.title}>{title}</Text>
 
       <Text style={styles.subtitle}>{subtitle}</Text>
 
       {buttonTitle ? (
-        <Button mode="contained" onPress={onPress} style={styles.button}>
+        <Button
+          mode="contained"
+          icon={buttonIcon}
+          onPress={onPress}
+          style={styles.button}
+          contentStyle={styles.buttonContent}
+          labelStyle={styles.buttonLabel}
+        >
           {buttonTitle}
         </Button>
       ) : null}

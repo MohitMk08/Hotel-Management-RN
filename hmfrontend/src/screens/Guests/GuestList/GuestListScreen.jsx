@@ -75,6 +75,7 @@ const GuestListScreen = ({ navigation }) => {
     <View style={styles.container}>
       <ScreenHeader
         title="Guests"
+        subtitle="Manage guest records"
         onBackPress={() => navigation.goBack()}
         rightActions={[
           {

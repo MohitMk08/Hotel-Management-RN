@@ -37,7 +37,11 @@ const SettingsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ScreenHeader title="Settings" onBackPress={() => navigation.goBack()} />
+      <ScreenHeader
+        title="Settings"
+        subtitle="Application preferences"
+        onBackPress={() => navigation.goBack()}
+      />
 
       <View style={styles.content}>
         <Card style={styles.card}>

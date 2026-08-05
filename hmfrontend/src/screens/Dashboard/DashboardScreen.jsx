@@ -78,7 +78,7 @@ const DashboardScreen = () => {
   };
   return (
     <SafeAreaView style={styles.sAriaContainer}>
-      <StatusBar barStyle="dark-content" translucent={true} animated={true} />
+      <StatusBar barStyle="dark-content" animated={true} />
       <View style={styles.container}>
         <AppHeader
           user={user}

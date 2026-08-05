@@ -30,10 +30,19 @@ const styles = StyleSheet.create({
 
   title: {
     marginLeft: 4,
-
     fontWeight: '700',
-
     color: '#111827',
+  },
+
+  titleContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+
+  subtitle: {
+    fontSize: 12,
+    color: COLORS.textSecondary,
+    marginTop: 2,
   },
 
   placeholder: {

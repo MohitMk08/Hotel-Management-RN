@@ -4,13 +4,14 @@ import { Icon } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
 import styles from './QuickActionsStyles';
+import COLORS from '../../../constants/colors';
 
 const QuickActions = ({ data }) => {
   const navigation = useNavigation();
 
   const renderItem = ({ item }) => (
     <Pressable
-      android_ripple={{ color: '#E5E7EB' }}
+      android_ripple={{ color: COLORS.surfaceAccent }}
       style={styles.card}
       onPress={() => {
         if (item.screen) {
@@ -34,7 +35,7 @@ const QuickActions = ({ data }) => {
         <Pressable style={styles.viewAllContainer}>
           <Text style={styles.viewAll}>View All</Text>
 
-          <Icon source="chevron-right" size={20} color="#2563EB" />
+          <Icon source="chevron-right" size={20} color={COLORS.primary} />
         </Pressable>
       </View>
 

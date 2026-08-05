@@ -207,6 +207,7 @@ const RoomTypeListScreen = ({ navigation }) => {
     <View style={styles.container}>
       <ScreenHeader
         title="Room Types"
+        subtitle="Configure room categories"
         onBackPress={() => navigation.goBack()}
         rightActions={[
           {

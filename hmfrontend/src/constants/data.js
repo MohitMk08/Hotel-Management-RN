@@ -58,7 +58,7 @@ export const quickActionData = [
     title: 'Bookings',
     icon: 'calendar-check-outline',
     color: COLORS.warning,
-    screen: '',
+    screen: 'Bookings',
   },
   {
     id: '5',

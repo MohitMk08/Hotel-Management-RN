@@ -9,6 +9,7 @@ import RoomListScreen from '../screens/Rooms/RoomListScreen/RoomListScreen';
 import AddRoomScreen from '../screens/Rooms/AddRoomScreen/AddRoomScreen';
 import GuestListScreen from '../screens/Guests/GuestList/GuestListScreen';
 import AddGuestScreen from '../screens/Guests/AddGuest/AddGuestScreen';
+import BookingListScreen from '../screens/bookings/BookingListScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +17,8 @@ const HomeStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Dashboard" component={DashboardScreen} />
+
+      <Stack.Screen name="Bookings" component={BookingListScreen} />
 
       <Stack.Screen name="RoomTypeList" component={RoomTypeListScreen} />
       <Stack.Screen

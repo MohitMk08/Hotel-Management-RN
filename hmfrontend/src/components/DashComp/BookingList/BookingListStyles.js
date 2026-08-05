@@ -185,4 +185,57 @@ export default StyleSheet.create({
     fontWeight: '500',
     color: COLORS.textSecondary,
   },
+
+  // =================
+  // empty state
+  // =================
+
+  emptyCard: {
+    backgroundColor: COLORS.white,
+    borderRadius: 14,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+
+  emptyTitle: {
+    marginTop: 18,
+    fontSize: 17,
+    fontWeight: '700',
+    color: COLORS.black,
+  },
+
+  emptySubtitle: {
+    marginTop: 8,
+    textAlign: 'center',
+    color: COLORS.textSecondary,
+    fontSize: 13,
+    lineHeight: 20,
+  },
+
+  addButton: {
+    marginTop: 24,
+    backgroundColor: COLORS.primary,
+    borderRadius: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  addButtonText: {
+    color: COLORS.white,
+    fontWeight: '700',
+    marginLeft: 8,
+    fontSize: 14,
+  },
 });

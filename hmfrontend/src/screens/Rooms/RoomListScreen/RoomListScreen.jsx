@@ -212,6 +212,7 @@ const RoomListScreen = ({ navigation }) => {
     <View style={styles.container}>
       <ScreenHeader
         title="Rooms"
+        subtitle="View room availability"
         onBackPress={() => navigation.goBack()}
         rightActions={[
           {

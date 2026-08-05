@@ -6,7 +6,19 @@ import { Avatar, Icon } from 'react-native-paper';
 import styles from './BookingListStyles';
 import { getBookingStatus } from '../../../utils/statusUtils';
 
-const BookingList = ({ data }) => {
+import EmptyState from '../../EmptyState/EmptyState';
+import COLORS from '../../../constants/colors';
+
+const BookingList = ({
+  bookings = [],
+  title = 'Recent Bookings',
+  showViewAll = true,
+  onViewAll,
+  onPressBooking,
+  onAddBooking,
+  emptyTitle = 'No Recent Bookings',
+  emptySubtitle = 'Bookings will appear here once reservations are created.',
+}) => {
   const getInitials = name => {
     if (!name) {
       return '';
@@ -32,7 +44,7 @@ const BookingList = ({ data }) => {
         style={({ pressed }) => [
           styles.bookingCard,
           pressed && styles.cardPressed,
-          index === data.length - 1 && styles.lastCard,
+          index === bookings.length - 1 && styles.lastCard,
         ]}
       >
         {/* Header */}
@@ -111,30 +123,59 @@ const BookingList = ({ data }) => {
           </View>
         </View>
 
-        {index !== data.length - 1 && <View style={styles.rowDivider} />}
+        {index !== bookings.length - 1 && <View style={styles.rowDivider} />}
       </Pressable>
     );
   };
+  if (bookings.length === 0) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>{title}</Text>
+
+          {showViewAll && (
+            <Pressable style={styles.viewAll} onPress={onViewAll}>
+              <Text style={styles.viewAllText}>View All</Text>
+
+              <Icon source="chevron-right" size={20} color={COLORS.primary} />
+            </Pressable>
+          )}
+        </View>
+
+        <View style={styles.sectionCard}>
+          <EmptyState
+            icon="calendar-blank-outline"
+            title="No Recent Bookings"
+            subtitle="Bookings will appear here once reservations are created."
+            buttonTitle="Add Booking"
+            onPress={onAddBooking}
+          />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       {/* Section Header */}
 
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Recent Bookings</Text>
+        <Text style={styles.sectionTitle}>{title}</Text>
 
-        <Pressable style={styles.viewAll}>
-          <Text style={styles.viewAllText}>View All</Text>
+        {showViewAll && (
+          <Pressable style={styles.viewAll} onPress={onViewAll}>
+            <Text style={styles.viewAllText}>View All</Text>
 
-          <Icon source="chevron-right" size={20} color="#2563EB" />
-        </Pressable>
+            <Icon source="chevron-right" size={20} color="#2563EB" />
+          </Pressable>
+        )}
       </View>
 
       {/* Section Body */}
 
       <View style={styles.sectionCard}>
         <FlatList
-          data={data}
+          bookings={bookings}
           keyExtractor={item => item.id}
           renderItem={renderItem}
           scrollEnabled={false}

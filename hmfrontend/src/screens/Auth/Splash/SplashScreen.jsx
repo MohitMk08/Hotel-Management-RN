@@ -36,8 +36,8 @@ const SplashScreen = ({ navigation }) => {
       <Image
         source={require('../../../assets/logo/hotel-logo.png')}
         style={{
-          width: 120,
-          height: 120,
+          width: 150,
+          height: 150,
           resizeMode: 'contain',
           marginBottom: 25,
         }}
