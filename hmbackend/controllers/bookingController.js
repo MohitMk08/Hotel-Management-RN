@@ -134,9 +134,35 @@ const updateBooking = async (req, res) => {
   }
 };
 
+// ======================================
+// Cancel Booking
+// ======================================
+
+const cancelBooking = async (req, res) => {
+  try {
+    const booking = await bookingService.cancelBooking(
+      req.params.id,
+      req.user.hotel_id,
+      req.user.id,
+      req.body.cancel_reason,
+    );
+
+    return successResponse(res, "Booking cancelled successfully", booking);
+  } catch (error) {
+    console.error(error);
+
+    return errorResponse(
+      res,
+      error.message || "Internal Server Error",
+      error.statusCode || 500,
+    );
+  }
+};
+
 module.exports = {
   createBooking,
   getBookings,
   getBookingById,
   updateBooking,
+  cancelBooking,
 };

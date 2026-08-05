@@ -492,9 +492,71 @@ const updateBooking = async (bookingId, hotel_id, data) => {
   }
 };
 
+// ======================================
+// Cancel Booking
+// ======================================
+
+const cancelBooking = async (bookingId, hotel_id, userId, cancelReason) => {
+  const booking = await getBookingById(bookingId, hotel_id);
+
+  if (!booking) {
+    throw new AppError("Booking not found", 404);
+  }
+
+  // ======================================
+  // Status Validation
+  // ======================================
+
+  switch (booking.booking_status) {
+    case BOOKING_STATUS.CANCELLED:
+      throw new AppError("Booking is already cancelled", 400);
+
+    case BOOKING_STATUS.CHECKED_IN:
+      throw new AppError("Checked-in booking cannot be cancelled", 400);
+
+    case BOOKING_STATUS.CHECKED_OUT:
+      throw new AppError("Checked-out booking cannot be cancelled", 400);
+  }
+
+  // ======================================
+  // Cancel Booking
+  // ======================================
+
+  await db.query(
+    `
+    UPDATE bookings
+
+    SET
+        booking_status = ?,
+        cancel_reason = ?,
+        cancelled_by = ?,
+        cancelled_at = NOW(),
+        updated_at = NOW()
+
+    WHERE
+        id = ?
+        AND hotel_id = ?
+    `,
+    [
+      BOOKING_STATUS.CANCELLED,
+      cancelReason ?? null,
+      userId,
+      bookingId,
+      hotel_id,
+    ],
+  );
+
+  return {
+    id: booking.id,
+    booking_number: booking.booking_number,
+    booking_status: BOOKING_STATUS.CANCELLED,
+  };
+};
+
 module.exports = {
   createBooking,
   getBookings,
   getBookingById,
   updateBooking,
+  cancelBooking,
 };
