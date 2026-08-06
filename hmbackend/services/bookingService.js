@@ -648,6 +648,87 @@ const checkInBooking = async (bookingId, hotel_id, userId) => {
   }
 };
 
+// ======================================
+// Check-Out Booking
+// ======================================
+
+const checkOutBooking = async (bookingId, hotel_id, userId) => {
+  const connection = await db.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const booking = await getBookingById(bookingId, hotel_id);
+
+    if (!booking) {
+      throw new AppError("Booking not found", 404);
+    }
+
+    // ======================================
+    // Status Validation
+    // ======================================
+
+    switch (booking.booking_status) {
+      case BOOKING_STATUS.RESERVED:
+        throw new AppError("Guest has not checked in yet", 400);
+
+      case BOOKING_STATUS.CANCELLED:
+        throw new AppError("Cancelled booking cannot be checked out", 400);
+
+      case BOOKING_STATUS.CHECKED_OUT:
+        throw new AppError("Booking is already checked out", 400);
+    }
+
+    // ======================================
+    // Update Booking
+    // ======================================
+
+    await connection.query(
+      `
+      UPDATE bookings
+      SET
+          booking_status = ?,
+          actual_check_out = NOW(),
+          checked_out_by = ?,
+          updated_at = NOW()
+      WHERE
+          id = ?
+          AND hotel_id = ?
+      `,
+      [BOOKING_STATUS.CHECKED_OUT, userId, bookingId, hotel_id],
+    );
+
+    // ======================================
+    // Update Room
+    // ======================================
+
+    await connection.query(
+      `
+      UPDATE rooms
+      SET
+          room_status = 'Available',
+          updated_at = NOW()
+      WHERE
+          id = ?
+      `,
+      [booking.room_id],
+    );
+
+    await connection.commit();
+
+    return {
+      id: booking.id,
+      booking_number: booking.booking_number,
+      booking_status: BOOKING_STATUS.CHECKED_OUT,
+    };
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
 module.exports = {
   createBooking,
   getBookings,
@@ -655,4 +736,5 @@ module.exports = {
   updateBooking,
   cancelBooking,
   checkInBooking,
+  checkOutBooking,
 };

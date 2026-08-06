@@ -179,6 +179,30 @@ const checkInBooking = async (req, res) => {
   }
 };
 
+// ======================================
+// Check-Out Booking
+// ======================================
+
+const checkOutBooking = async (req, res) => {
+  try {
+    const booking = await bookingService.checkOutBooking(
+      req.params.id,
+      req.user.hotel_id,
+      req.user.id,
+    );
+
+    return successResponse(res, "Guest checked out successfully", booking);
+  } catch (error) {
+    console.error(error);
+
+    return errorResponse(
+      res,
+      error.message || "Internal Server Error",
+      error.statusCode || 500,
+    );
+  }
+};
+
 module.exports = {
   createBooking,
   getBookings,
@@ -186,4 +210,5 @@ module.exports = {
   updateBooking,
   cancelBooking,
   checkInBooking,
+  checkOutBooking,
 };
