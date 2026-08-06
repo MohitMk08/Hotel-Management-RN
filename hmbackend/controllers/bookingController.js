@@ -112,14 +112,10 @@ const updateBooking = async (req, res) => {
       return errorResponse(res, validation.message, 400);
     }
 
-    const bookingData = {
-      ...req.body,
-    };
-
     const booking = await bookingService.updateBooking(
       req.params.id,
       req.user.hotel_id,
-      bookingData,
+      req.body,
     );
 
     return successResponse(res, "Booking updated successfully", booking);
@@ -159,10 +155,35 @@ const cancelBooking = async (req, res) => {
   }
 };
 
+// ======================================
+// Check-In Booking
+// ======================================
+
+const checkInBooking = async (req, res) => {
+  try {
+    const booking = await bookingService.checkInBooking(
+      req.params.id,
+      req.user.hotel_id,
+      req.user.id,
+    );
+
+    return successResponse(res, "Guest checked in successfully", booking);
+  } catch (error) {
+    console.error(error);
+
+    return errorResponse(
+      res,
+      error.message || "Internal Server Error",
+      error.statusCode || 500,
+    );
+  }
+};
+
 module.exports = {
   createBooking,
   getBookings,
   getBookingById,
   updateBooking,
   cancelBooking,
+  checkInBooking,
 };

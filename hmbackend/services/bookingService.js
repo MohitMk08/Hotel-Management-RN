@@ -553,10 +553,106 @@ const cancelBooking = async (bookingId, hotel_id, userId, cancelReason) => {
   };
 };
 
+// ======================================
+// Check-In Booking
+// ======================================
+
+const checkInBooking = async (bookingId, hotel_id, userId) => {
+  const connection = await db.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const booking = await getBookingById(bookingId, hotel_id);
+
+    if (!booking) {
+      throw new AppError("Booking not found", 404);
+    }
+
+    // ======================================
+    // Status Validation
+    // ======================================
+
+    switch (booking.booking_status) {
+      case BOOKING_STATUS.CANCELLED:
+        throw new AppError("Cancelled booking cannot be checked in", 400);
+
+      case BOOKING_STATUS.CHECKED_IN:
+        throw new AppError("Booking is already checked in", 400);
+
+      case BOOKING_STATUS.CHECKED_OUT:
+        throw new AppError("Checked-out booking cannot be checked in", 400);
+    }
+
+    // ======================================
+    // Room Validation
+    // ======================================
+
+    const room = await roomService.getRoomForBooking(booking.room_id, hotel_id);
+
+    if (!room) {
+      throw new AppError("Room not found", 404);
+    }
+
+    if (room.room_status !== "Available") {
+      throw new AppError("Room is not available for check-in", 400);
+    }
+
+    // ======================================
+    // Update Booking
+    // ======================================
+
+    await connection.query(
+      `
+      UPDATE bookings
+      SET
+          booking_status = ?,
+          actual_check_in = NOW(),
+          checked_in_by = ?,
+          updated_at = NOW()
+      WHERE
+          id = ?
+          AND hotel_id = ?
+      `,
+      [BOOKING_STATUS.CHECKED_IN, userId, bookingId, hotel_id],
+    );
+
+    // ======================================
+    // Update Room
+    // ======================================
+
+    await connection.query(
+      `
+      UPDATE rooms
+      SET
+          room_status = 'Occupied',
+          updated_at = NOW()
+      WHERE
+          id = ?
+      `,
+      [booking.room_id],
+    );
+
+    await connection.commit();
+
+    return {
+      id: booking.id,
+      booking_number: booking.booking_number,
+      booking_status: BOOKING_STATUS.CHECKED_IN,
+    };
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
 module.exports = {
   createBooking,
   getBookings,
   getBookingById,
   updateBooking,
   cancelBooking,
+  checkInBooking,
 };
